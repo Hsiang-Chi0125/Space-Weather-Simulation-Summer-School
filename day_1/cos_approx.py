@@ -1,25 +1,23 @@
-#!/usr/bin/env python
-"""Space 477: Python: I
-
-cosine approximation function
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-__author__ = 'Qusai Al Shidi'
-__email__ = 'qusai@umich.edu'
+Created on Mon Jul 18 17:04:00 2022
 
-from math import factorial
-from math import pi
+@author: student
+"""
+__author__ = 'Hsiang-Chi Yeh'
+__email__ = 'chi90125@gmail.com'
+
+from datetime import datetime
+from swmfpy.web import get_omni_data
+import matplotlib.pyplot as plt
+
+start_time = datetime(2001, 1, 25)
+end_time = datetime(2001, 1, 25)
+data = get_omni_data(start_time, end_time)  # returns a dictionary
+data.keys()
 
 
-def cos_approx(x, accuracy=10):
-    """
-    """
-    return 
-
-
-
-# Will only run if this is run from command line as opposed to imported
-if __name__ == '__main__':  # main code block
-    print("cos(0) = ", cos_approx(0))
-    print("cos(pi) = ", cos_approx(pi))
-    print("cos(2*pi) = ", cos_approx(2*pi))
-    print("more accurate cos(2*pi) = ", cos_approx(2*pi, accuracy=50))
+AL=list(data['al'])
+plt.plot(AL)
+plt.show()
