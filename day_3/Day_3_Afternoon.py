@@ -2,15 +2,10 @@
 # -*- coding: utf-8 -*-
 """
 Welcome back from lunch.
-
 In the afternoon session, we will be working with panda dataframe and text files
-
 Goal: Getting comfortable with reading and writing data, doing simple data 
 manipulation, and visualizing data.
-
 Task: Fill in the cells with the correct codes
-
-
 @author: Peng Mun Siew
 """
 #%%
@@ -33,7 +28,11 @@ import pandas as pd
 
 csv_path = 'Data/jena_climate_2009_2016/jena_climate_2009_2016.csv'
 df = pd.read_csv(csv_path)
-
+df = df[5::6]
+date_time = pd.to_datetime(df.pop('Date Time'), format='%d.%m.%Y %H:%M:%S')
+print(date_time)
+print(df)
+df.head()
 
 #%%
 """
@@ -41,36 +40,83 @@ Plot a subset of data from the dataframe
 """
 
 plot_cols = ['T (degC)', 'p (mbar)', 'rho (g/m**3)']
+plot_features = df[plot_cols]
+plot_features.index = date_time
+print(plot_features())
+_ = plot_features.plot(subplots=True)
 
+plot_features = df[plot_cols][:480]
+plot_features.index = date_time[:480]
+_ = plot_features.plot(subplots=True)
 
+df.describe().transpose()
 
 #%%
 """
 Data filtering, generating histogram and heatmap (2D histogram)
 """
+# We will first identify the index of the bad data and then replace them with zero
+wv = df['wv (m/s)']
+bad_wv = wv == -9999.0
+wv[bad_wv] = 0.0
 
+max_wv = df['max. wv (m/s)']
+bad_max_wv = max_wv == -9999.0
+max_wv[bad_max_wv] = 0.0
 
+# The above inplace edits are then reflected in the DataFrame.
+df['wv (m/s)'].min()
 
+import matplotlib.pyplot as plt
+
+fig, axs = plt.subplots(1, figsize=(8, 5))
+plt.hist(df['wd (deg)'])
+plt.xlabel('Wind Direction [deg]', fontsize=16)
+plt.ylabel('Number of Occurence', fontsize=16)
+plt.tick_params(axis = 'both', which = 'major', labelsize = 14)
+plt.grid()
+
+#%%
+import matplotlib.pyplot as plt
+
+fig, axs = plt.subplots(1, figsize=(8, 5))
+plt.hist2d(df['wd (deg)'], df['wv (m/s)'], bins=(50, 50), vmax=400)
+plt.colorbar()
+plt.xlabel('Wind Direction [deg]', fontsize=16)
+plt.ylabel('Wind Velocity [m/s]', fontsize=16)
+plt.tick_params(axis = 'both', which = 'major', labelsize = 14)
 
 
 #%%
 """
 Assignment 1: Visualize the density values along the trajectory of the CHAMP satellite for the first 50 days in 2002
-
 Trajectory of CHAMP in year 2002 - Data interpolation - https://zenodo.org/record/4602380#.Ys--Fy-B2i5
-
 Assignment 1(a): Extract hourly position location (local solar time, lattitude, altitude) from the daily CHAMP data to obtain the hourly trajectory of the CHAMP satellite in 2002
 """
 #%%
 """
 Hint 1: How to identify dir path to files of interest
 """
+import os
+
+datalist2 = [os.path.join("Data/Champ_dens_2002/", file) for file in os.listdir("Data/Champ_dens_2002/") if file.endswith(".txt")]
+
+datalist = []
+for file in os.listdir("Data/Champ_dens_2002/"):
+    if file.endswith(".txt"):
+        datalist.append(os.path.join("Data/Champ_dens_2002/", file))
+
+# Practice: Do this using list comprehension        
+# After getting the file path, sort it in increasing order        
+sortedChampdata = sorted(datalist)
+
+assert len(sortedChampdata) == 50
 
 
 
 #%%
 """
-Hint 1: How to read a tab delimited text file
+Hint 2: How to read a tab delimited text file
 """
 import pandas as pd
 
@@ -82,14 +128,18 @@ header_label = ['GPS Time (sec)','Geodetic Altitude (km)','Geodetic Latitude (de
 """
 Hint 3: Data slicing (Identifying data index of interest and extracting the relevant data (local solar time, lattitude, altitude))
 """
+import numpy as np
 
+idx_interest = np.where(df['GPS Time (sec)']== 10)[0] # get index of data that satisfy our condition
+print(df['Geodetic Altitude (km)'][idx_interest])
 
 
 #%%
 """
 Hint 4: The remainder operator is given by % and might be useful.
 """
-
+arr = np.linspace(1,20,20)
+print(arr%5)
 
 
 #%%
@@ -122,7 +172,6 @@ Assignment 1(d): Now do it using the TIE-GCM density data and plot both density 
 #%%
 """
 Assignment 1(e): The plots look messy. Let's calculate the daily average density and plot those instead. 
-
 Hint: Use np.reshape and np.mean
 """
 
@@ -137,7 +186,4 @@ Assignment 1(f): Load the accelerometer derived density from the CHAMP data (Den
 #%%
 """
 Assignment 2: Make a python function that will parse the inputs to output the TIE-GCM density any arbritary position (local solar time, latitude, altitude) and an arbritary day of year and hour in 2002
-
 """
-
-
