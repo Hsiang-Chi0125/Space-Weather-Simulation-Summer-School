@@ -17,18 +17,62 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation    #We have to load this
 from math import pi
-#%matplotlib qt
+%matplotlib qt
 plt.close()
 
 "Number of points"
 N = 16
 Dx = 1/N
-x = np.linspace(0,1,N+1)
+#x = np.linspace(0,1,N+1)
+x = np.linspace(0,1+Dx,N+2)
 
+#%%
+"Time parameters"
+dt = 1/24
+time  = np.arange(0, 3+dt, dt)
+nt = len(time)
+
+order = 2
+
+if order < 2:
+    U = np.zeros(N+1, nt)
+else:
+    U = np.zeros(N+2, nt)
+
+for it in range(nt):
+    if order < 2:
+        A = (1/Dx**2) * (2*np.diag(np.ones(N+1)) - np.diag(np.ones(N),-1) - np.diag(np.ones(N),1))
+        F = 2 * (2*(x**2) + 5*x - 2) * np.exp(x)
+        
+        A = A + (1/dt)*diag(np.ones(N+1))
+        F = F + U[:,it]/dt
+        
+        A[0,:] = np.concatenate(([1], np.zeros(N)))
+        F[0] = u0
+        
+        A[N,:] = np.concatenate((np.zeros(N-1), [-1,1]))
+        F[N] = u0
+    
+    else:
+        A = (1/Dx**2) * (2*np.diag(np.ones(N+1)) - np.diag(np.ones(N),-1) - np.diag(np.ones(N),1))
+        F = 2 * (2*(x**2) + 5*x - 2) * np.exp(x)
+        
+        A = A + (1/dt)*diag(np.ones(N+1))
+        F = F + U[:,it]/dt
+        
+        A[0,:] = np.concatenate(([1], np.zeros(N)))
+        F[0] = u0
+        
+        A[N+1,:] = (1/2) * (1/Dx) * np.concatenate((np.zeros(N-2), [1/2, -2, 3/2]))
+        F[N+1] = 0
+    u = np.lin
+    U[:,]
+    
+#%%
 "System matrix and RHS term"
-A = (1/Dx**2) * (2*np.diag(np.ones(N+1)) - np.diag(np.ones(N),-1) - np.diag(np.ones(N),1))
+A = (1/Dx**2) * (2*np.diag(np.ones(N+2)) - np.diag(np.ones(N+1),-1) - np.diag(np.ones(N+1),1))
 #F = (3*x + x**2) * np.exp(x)
-F = 2*(2*(x**2)+5*x-2) * np.exp(x)
+F = 2 * (2*(x**2) + 5*x - 2) * np.exp(x)
 
 "Boundary condition at x=0"
 A[0,:] = np.concatenate(([1], np.zeros(N)))
@@ -36,15 +80,17 @@ F[0] = 0
 
 "Boundary condition at x=1"
 #A[N,:] = np.concatenate((np.zeros(N), [1]))
-A[N,:] = (1/Dx)*np.concatenate((np.zeros(N-1), [-1,1]))
-#A[N,:] = (1/Dx)*np.concatenate((np.zeros(N-2), [1/2, -2, 3/2]))
-F[N] = 0
+#A[N,:] = (1/Dx) * np.concatenate((np.zeros(N-1), [-1,1]))
+#A[N,:] = (1/Dx) * np.concatenate((np.zeros(N-2), [1/2, -2, 3/2]))
+A[N+1,:] = (1/2) * (1/Dx) * np.concatenate((np.zeros(N-1), [-1,0,1]))
+#F[N] = 0
+F[N+1] = 0
 
 "Solution of the linear system AU=F"
 U = np.linalg.solve(A,F)
 u = U
-#ua = -x*(x-1)*np.exp(x)
-ua = 2*x*(3-2*x)*np.exp(x)
+#ua = -x * (x-1) * np.exp(x)
+ua = 2*x * (3-2*x) * np.exp(x)
 
 "Plotting solution"
 plt.plot(x,ua,'-r',linewidth=2,label='$u_a$')
