@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Jul 25 17:08:12 2022
-
 @author: student
 """
 __author__ = 'Hsiang-Chi Yeh'
@@ -66,5 +65,3 @@ ax = plt.axes(projection ='3d')
 ax.plot3D(y.T[0], y.T[1], y.T[2])
 
 for ik in range (20):
-    
-

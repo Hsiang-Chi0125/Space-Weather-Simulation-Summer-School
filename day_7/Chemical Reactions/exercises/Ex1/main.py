@@ -8,7 +8,7 @@ import dormand_prince as dp
 import runge_kutta as rk
 
 def dormand_prince_integrator(f, x, t, h):
-    return ... # please complete this function
+    return rk.explicit_RK_stepper(f, x, t, h, dp.a, dp.b, dp.c) # please complete this function
                # so it returns the prediction for the 
                # Dormand-Prince method 
                # To that end, use rk.explicit_rk_stepper!
@@ -17,7 +17,7 @@ def dormand_prince_integrator(f, x, t, h):
 # and see how the solution changes!
 
 # time horizon
-tspan = (0.0,2.0)
+tspan = (0.0, 2.0)
 # time step 
 h = 0.2
 # initial condition

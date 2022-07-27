@@ -15,6 +15,7 @@ f.close()
 import numpy as np
 import datetime as dt
 import argparse
+import matplotlib.pyplot as plt
 
 def read_ascii_file(filename, index = -1):
     with open(filename) as f:
@@ -36,15 +37,12 @@ def read_ascii_file(filename, index = -1):
     return data_dic
 
 def parse_args():
-    
-    parser = argparse.ArgumentParser(description = \
-                                   'homework')
+    parser = argparse.ArgumentParser(description = 'homework')
     parser.add_argument('-filename', \
                     help = 'filename', type = str, default = "output")
     parser.add_argument('-output_filename',\
                     help = 'output_filename', type = str, default = "output")
     args = parser.parse_args()
-    
     return args
 
 args = parse_args()
@@ -56,7 +54,6 @@ print('output_filename = ', output_filename)
 time1 = dt.datetime(2013, 2, 1, 15, 30)
 print(time1.date())
   
-import matplotlib.pyplot as plt
 #filename='/Users/student/Documents/Space-Weather-Simulation-Summer-School/day_2/omni_min_def_20130316.lst'
 index = 4
 data = read_ascii_file(filename, index)
